@@ -1,0 +1,18 @@
+[
+  {
+    "model": "core.menuitem",
+    "fields": {
+      "name": "Pizza Margherita",
+      "description": "Base de tomate, queso mozzarella y albahaca.",
+      "price": 9.99
+    }
+  },
+  {
+    "model": "core.menuitem",
+    "fields": {
+      "name": "Hamburguesa Clásica",
+      "description": "Carne, queso cheddar, lechuga y tomate.",
+      "price": 7.99
+    }
+  }
+]

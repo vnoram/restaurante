@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Panel de Administración</title>
+  </head>
+  <body>
+    <h1>Reservas Totales</h1>
+    <ul>
+      {% for reservation in reservations %}
+      <li>
+        {{ reservation.menu_item }} - {{ reservation.user.username }} - {{
+        reservation.reservation_date }}
+      </li>
+      {% endfor %}
+    </ul>
+    <a href="{% url 'home' %}">Volver</a>
+    <a href="{% url 'logout' %}">Cerrar sesión</a>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from .models import Platillo
+from .models import Reserva
+from django.core.exceptions import ValidationError
+
+
+# Formulario personalizado para registrar usuarios
+class CustomUserCreationForm(UserCreationForm):
+    """
+    Formulario para registrar nuevos usuarios.
+    Hereda de UserCreationForm para extender sus funcionalidades.
+    """
+    email = forms.EmailField(required=True, help_text="Introduce una dirección de correo válida.")  # Campo adicional para el correo electrónico
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']  # Campos del formulario
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise ValidationError("Este correo electrónico ya está registrado.")
+        return email
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get("password1")
+        password2 = cleaned_data.get("password2")
+        if password1 and password2 and password1 != password2:
+            raise ValidationError("Las contraseñas no coinciden.")
+        return cleaned_data
+
+        
+
+#formulario para platillos
+class PlatilloForm(forms.ModelForm):
+    class Meta:
+        model = Platillo
+        fields = ['nombre', 'descripcion', 'precio', 'imagen']  # Asegúrate de que 'precio' esté aquí
+
+
+# Formulario para las reservas
+class ReservaForm(forms.ModelForm):
+    class Meta:
+        model = Reserva
+        fields = ['reservation_date', 'numero_personas', 'comentarios']
+
+    # Usando DateTimeInput para que el usuario pueda seleccionar tanto la fecha como la hora
+    reservation_date = forms.DateTimeField(
+        required=True,
+        widget=forms.widgets.DateTimeInput(attrs={'type': 'datetime-local'})
+    )
+
+    comentarios = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={'placeholder': 'Comentarios (opcional)'})
+    )
+

@@ -1,0 +1,6 @@
+<h1>Pedidos</h1>
+<ul>
+  {% for order in orders %}
+  <li>Pedido {{ order.id }} - {{ order.date }}</li>
+  {% endfor %}
+</ul>

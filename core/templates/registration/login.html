@@ -1,0 +1,52 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar Sesión</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <!-- Enlace al archivo CSS si tienes estilos personalizados -->
+  </head>
+  <body>
+    <header>
+      <h1>Iniciar Sesión</h1>
+    </header>
+    <main>
+      <form method="post" action="{% url 'login' %}">
+        <!-- URL que apunta a la vista de login -->
+        {% csrf_token %}
+        <!-- Token de seguridad para prevenir ataques CSRF -->
+        <div>
+          <label for="username">Nombre de usuario:</label>
+          <input type="text" id="username" name="username" required />
+          <!-- Campo para ingresar el nombre de usuario -->
+        </div>
+        <div>
+          <label for="password">Contraseña:</label>
+          <input type="password" id="password" name="password" required />
+          <!-- Campo para ingresar la contraseña -->
+        </div>
+        {% if form.errors %}
+        <!-- Mostrar errores si los hay -->
+        <div class="errors">
+          <p>Nombre de usuario o contraseña incorrectos. Intenta de nuevo.</p>
+        </div>
+        {% endif %}
+        <div>
+          <button type="submit">Iniciar Sesión</button>
+          <!-- Botón para enviar el formulario -->
+        </div>
+      </form>
+      <p>
+        ¿No tienes una cuenta?
+        <a href="{% url 'register' %}">Regístrate aquí</a>.
+      </p>
+      <!-- Enlace a la página de registro -->
+    </main>
+    <footer>
+      <p>&copy; 2024 Restaurante. Todos los derechos reservados.</p>
+    </footer>
+  </body>
+</html>

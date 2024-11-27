@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel de Cliente</title>
+  </head>
+  <body>
+    <h1>Bienvenido al Panel de Cliente</h1>
+    <p>¡Hola, {{ user.username }}! Aquí puedes ver tus reservas y opciones.</p>
+
+    <ul>
+      <li>
+        <a href="{% url 'my_reservations' %}">Ver mis reservas</a>
+      </li>
+      <li>
+        <a href="{% url 'reserve' %}">Hacer una nueva reserva</a>
+      </li>
+      <li>
+        <a href="{% url 'logout' %}">Cerrar sesión</a>
+      </li>
+    </ul>
+
+    <h3>Mis Reservas</h3>
+    <ul>
+      {% for reserva in reservas %}
+      <li>{{ reserva.nombre }} - {{ reserva.fecha }} - {{ reserva.estado }}</li>
+      {% empty %}
+      <p>No tienes reservas actuales.</p>
+      {% endfor %}
+    </ul>
+  </body>
+</html>

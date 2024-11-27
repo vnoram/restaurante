@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Reservar</title>
+  </head>
+  <body>
+    <h1>Hacer una Reserva</h1>
+
+    <!-- Formulario de reserva -->
+    <form method="POST">
+      {% csrf_token %} {{ form.as_p }}
+      <!-- Esto renderiza todos los campos del formulario -->
+
+      <button type="submit">Realizar Reserva</button>
+    </form>
+
+    <!-- Enlace para volver al home -->
+    <a href="{% url 'home' %}">Volver</a>
+  </body>
+</html>

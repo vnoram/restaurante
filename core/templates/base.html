@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restaurante</title>
+  </head>
+  <body>
+    <header>
+      <h1>Bienvenido al Restaurante</h1>
+    </header>
+
+    <nav>
+      <ul>
+        <li><a href="{% url 'home' %}">Inicio</a></li>
+        <li><a href="{% url 'menu' %}">Menú</a></li>
+        {% if is_waiter %}
+        <li>
+          <a href="{% url 'waiter_dashboard' %}">Dashboard de Camarero</a>
+        </li>
+        {% endif %} {% if is_admin %}
+        <li>
+          <a href="{% url 'admin_dashboard' %}">Dashboard de Administrador</a>
+        </li>
+        {% endif %} {% if user.is_authenticated %}
+        <li><a href="{% url 'logout' %}">Cerrar sesión</a></li>
+        {% else %}
+        <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+
+    <main>
+      {% block content %}
+      <!-- Aquí irá el contenido dinámico de cada página -->
+      {% endblock %}
+    </main>
+
+    <footer>
+      <p>&copy; 2024 Restaurante. Todos los derechos reservados.</p>
+    </footer>
+  </body>
+</html>

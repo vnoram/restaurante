@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Menú</title>
+  </head>
+  <body>
+    <h2>Menú</h2>
+    <ul>
+      {% for platillo in platillos %}
+      <li>
+        {{ platillo.nombre }} - {{ platillo.descripcion }} -
+        <p>Precio: ${{ platillo.precio|floatformat:2 }}</p>
+
+        <!-- Botón para eliminar -->
+        <form method="POST" action="{% url 'delete_platillo' platillo.id %}">
+          {% csrf_token %} {% if user_role == 'Administrador' %}
+          <button type="submit">Eliminar</button>
+          {% endif %}
+        </form>
+      </li>
+      {% empty %}
+      <p>No hay platillos disponibles en el menú.</p>
+      {% endfor %}
+    </ul>
+    <!-- Si el usuario es cliente o mesero, mostrar la opción para hacer una reserva -->
+    {% if user_role == 'Cliente' or user_role == 'Camarero' %}
+    <br />
+    <a href="{% url 'reserve' %}">Hacer una Reserva</a>
+    {% endif %}
+
+    <!-- Si el usuario es admin, mostrar el formulario para agregar platillo -->
+    {% if user_role == 'Administrador' %}
+    <h1>Agregar Platillo</h1>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %} {{ form.as_p }}
+      <button type="submit">Agregar Platillo</button>
+    </form>
+    {% endif %}
+
+    <a href="{% url 'home' %}">Volver</a>
+    <br />
+    <a href="{% url 'logout' %}">Cerrar Sesión</a>
+  </body>
+</html>
