@@ -1,0 +1,20 @@
+# Ignorar configuraciones sensibles
+/restaurante/settings.py
+
+# Ignorar archivos de bases de datos
+db.sqlite3
+*.sql
+
+# Ignorar archivos del entorno virtual
+env/
+.venv/
+
+# Ignorar archivos compilados
+*.pyc
+__pycache__/
+
+# Ignorar archivos de logs
+*.log
+
+# Ignorar carpetas de configuración de tu IDE
+.vscode/
