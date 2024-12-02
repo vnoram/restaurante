@@ -7,24 +7,20 @@
   </head>
   <body>
     <h1>Bienvenido al Restaurante</h1>
-
     {% if user.is_authenticated %}
-    <!-- Mensaje para usuarios autenticados -->
     <p>Hola, {{ user.username }}. Elige una opción:</p>
 
     {% if is_waiter %}
-    <!-- Opciones para meseros -->
     <a href="{% url 'waiter_dashboard' %}">Ir al Panel de Mesero</a>
     {% else %}
-    <!-- Opciones para otros usuarios -->
     <a href="{% url 'menu' %}">Ver el Menú</a>
     <a href="{% url 'reservations_list' %}">Ver Reservaciones</a>
-    {% endif %}
 
-    <!-- Enlace para cerrar sesión -->
+    {% if is_admin %}
+    <a href="{% url 'manage_user' %}">Gestión de Usuarios</a>
+    {% endif %} {% endif %}
     <a href="{% url 'logout' %}">Cerrar Sesión</a>
     {% else %}
-    <!-- Mensaje para usuarios no autenticados -->
     <p>
       Por favor, <a href="{% url 'login' %}">inicia sesión</a> para acceder a
       más opciones.
