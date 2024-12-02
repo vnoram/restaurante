@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 
 
@@ -35,8 +36,12 @@ class Waiter(models.Model):
 class Platillo(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
-    precio = models.DecimalField(max_digits=10, decimal_places=2)  # Asegúrate de usar DecimalField para manejar precios
+    precio = models.DecimalField(max_digits=10, decimal_places=2)  # Asegúrate de valores positivos
     imagen = models.ImageField(upload_to='platillos/', blank=True, null=True)
+
+    def clean(self):
+        if self.precio < 0:
+            raise ValidationError({'precio': 'El precio no puede ser negativo.'})
 
     def __str__(self):
         return self.nombre

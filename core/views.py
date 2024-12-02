@@ -244,9 +244,11 @@ def add_platillo_view(request):
         form = PlatilloForm(request.POST, request.FILES)  # Asegúrate de permitir archivos si usas imagenes
         if form.is_valid():
             form.save()  # Guarda el platillo en la base de datos
+            messages.success(request, 'Platillo agregado correctamente.')
             return redirect('menu')  # Redirige al menú una vez agregado el platillo
     else:
         form = PlatilloForm()
+        messages.error(request, 'Corrige los errores del formulario.')
 
     return render(request, 'core/menu.html', {'form': form})
 

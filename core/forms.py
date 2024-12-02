@@ -38,8 +38,13 @@ class CustomUserCreationForm(UserCreationForm):
 class PlatilloForm(forms.ModelForm):
     class Meta:
         model = Platillo
-        fields = ['nombre', 'descripcion', 'precio', 'imagen']  # Asegúrate de que 'precio' esté aquí
+        fields = ['nombre', 'descripcion', 'precio', 'imagen']
 
+    def clean_precio(self):
+        precio = self.cleaned_data.get('precio')
+        if precio < 0:
+            raise forms.ValidationError('El precio no puede ser negativo.')
+        return precio
 
 # Formulario para las reservas
 class ReservaForm(forms.ModelForm):
