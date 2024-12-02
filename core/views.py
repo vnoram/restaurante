@@ -10,7 +10,7 @@ from .forms import ReservaForm  # Importar el formulario
 from django.contrib import messages
 from core.forms import CustomUserCreationForm  # Usar el formulario personalizado
 from .models import Reserva
-
+from .forms import AddWaiterForm
 
 
 
@@ -314,3 +314,19 @@ def add_user_view(request):
     else:
         form = UserCreationForm()
     return render(request, 'core/add_user.html', {'form': form})
+
+#agregar camareros
+def is_admin(user):
+    return user.is_superuser
+
+@login_required
+@user_passes_test(is_admin)
+def add_waiter_view(request):
+    if request.method == 'POST':
+        form = AddWaiterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_user')  # Redirige a la gestión de usuarios
+    else:
+        form = AddWaiterForm()
+    return render(request, 'core/add_waiter.html', {'form': form})
