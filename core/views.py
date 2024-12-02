@@ -120,7 +120,7 @@ def logout_view(request):
     return redirect('home')
 
 #!-----------------------------------------------------------
-# Función para registrar usuarios y asignarles un grupo
+# Función para registrar usuarios y asignarles un grupo por defecto como cliente
 def register_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -140,10 +140,9 @@ def register_view(request):
         # Crear el nuevo usuario
         user = User.objects.create_user(username=username, password=password, email=email)
 
-        group = request.POST.get('group')  # Puede ser 'admin', 'waiter', 'cliente'
-        if group:
-            group_obj, created = Group.objects.get_or_create(name=group)
-            user.groups.add(group_obj)  # Asignar el grupo al usuario
+        # Asignar automáticamente al grupo "cliente"
+        group_obj, created = Group.objects.get_or_create(name='cliente')
+        user.groups.add(group_obj)  # Asignar el grupo "cliente" al usuario
 
         user.save()
         messages.success(request, 'Usuario registrado exitosamente.')
@@ -316,17 +315,27 @@ def add_user_view(request):
     return render(request, 'core/add_user.html', {'form': form})
 
 #agregar camareros
-def is_admin(user):
-    return user.is_superuser
-
 @login_required
-@user_passes_test(is_admin)
+@user_passes_test(is_admin)  # Solo admins pueden acceder
 def add_waiter_view(request):
     if request.method == 'POST':
         form = AddWaiterForm(request.POST)
         if form.is_valid():
-            form.save()
+            waiter = form.save(commit=False)
+            waiter.set_password(form.cleaned_data['password'])  # Asegúrate de hashear el password
+            waiter.save()
+            
+            # Asignar al grupo 'waiter' (o camarero)
+            waiter_group, created = Group.objects.get_or_create(name='waiter')
+            waiter.groups.add(waiter_group)
+            
+            messages.success(request, 'Camarero agregado exitosamente.')
+            form = AddWaiterForm()
             return redirect('manage_user')  # Redirige a la gestión de usuarios
+        else:
+            messages.error(request, 'Corrige los errores del formulario.')
     else:
+        # Inicializa un formulario vacío para solicitudes GET
         form = AddWaiterForm()
     return render(request, 'core/add_waiter.html', {'form': form})
+

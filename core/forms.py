@@ -71,6 +71,12 @@ class AddWaiterForm(forms.ModelForm):
         model = User
         fields = ['username', 'email', 'password']
 
+    def __init__(self, *args, **kwargs):
+        super(AddWaiterForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.initial = None  # Esto asegura que no haya datos iniciales en el formulario
+
+
     def save(self, commit=True):
         user = super().save(commit=False)
         user.set_password(self.cleaned_data['password'])
