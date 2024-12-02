@@ -268,3 +268,49 @@ def delete_platillo(request, platillo_id):
 
     # Si no es POST, solo mostrar la página de confirmación
     return render(request, 'core/confirm_delete.html', {'platillo': platillo})
+
+
+
+#!--------------------------------------------------------------------------------------------------------------
+# Decorador para asegurar que solo los admins accedan
+def is_admin(user):
+    return user.is_staff  # Solo los usuarios con el atributo `is_staff` serán considerados administradores.
+
+@user_passes_test(is_admin)
+
+def manage_user_view(request):
+    users = User.objects.all()
+    users_with_roles = []
+    for user in users:
+        group = user.groups.first()  # Obtiene el primer grupo al que pertenece el usuario
+        role = group.name if group else "Sin rol"  # Si no tiene grupo, muestra "Sin rol"
+        users_with_roles.append({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "role": role
+        })
+    return render(request, 'core/manage_user.html', {'users': users_with_roles})
+
+@user_passes_test(is_admin)
+def delete_user_view(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if user.is_superuser:  # Evitar eliminar al superusuario
+        messages.error(request, "No puedes eliminar al superusuario.")
+        return redirect('manage_user')
+    user.delete()
+    messages.success(request, f"El usuario {user.username} ha sido eliminado.")
+    return redirect('manage_user')
+
+#agregar usuarios
+@user_passes_test(is_admin)
+def add_user_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Usuario creado exitosamente.")
+            return redirect('manage_user')
+    else:
+        form = UserCreationForm()
+    return render(request, 'core/add_user.html', {'form': form})

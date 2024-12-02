@@ -14,6 +14,8 @@ urlpatterns = [
     path('register/', views.register_view, name='register'),  # Vista para registrar usuarios
     path('add_platillo/', views.add_platillo_view, name='add_platillo'),  # Nueva URL para agregar platillos
     path('delete_platillo/<int:platillo_id>/', views.delete_platillo, name='delete_platillo'),  # Ruta para eliminar platillo
-
+    path('manage_user/', views.manage_user_view, name='manage_user'),
+    path('delete_user/<int:user_id>/', views.delete_user_view, name='delete_user'),
+    path('add-user/', views.add_user_view, name='add_user'),
 
 ]
