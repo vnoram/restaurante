@@ -50,17 +50,16 @@ class Platillo(models.Model):
 #user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 # Modelo para las reservas
+
 class Reserva(models.Model):
-    cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE, null=True, blank=True)
-    #cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)  # Relación con Cliente
-    menu_item = models.ForeignKey('MenuItem', on_delete=models.CASCADE, null=True)  # Menú relacionado
-    reservation_date = models.DateTimeField()  # Fecha y hora de la reserva
-    numero_personas = models.PositiveIntegerField()  # Número de invitados
-    comentarios = models.TextField(blank=True, null=True)  # Comentarios opcionales
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE, null=True)
+    reservation_date = models.DateTimeField()
+    numero_personas = models.PositiveIntegerField()
+    comentarios = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"Reserva de {self.cliente.user.username} para {self.numero_personas} personas el {self.reservation_date}"
-
+        return f"Reserva de {self.cliente.username} para {self.numero_personas} personas el {self.reservation_date}"
 #? identificador unico para los clientes
 class Cliente(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)  # Relación 1 a 1 con User

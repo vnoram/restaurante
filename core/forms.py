@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from .models import Platillo
 from .models import Reserva
 from django.core.exceptions import ValidationError
+from django.utils.timezone import now
 
 
 # Formulario personalizado para registrar usuarios
@@ -51,17 +52,16 @@ class ReservaForm(forms.ModelForm):
     class Meta:
         model = Reserva
         fields = ['reservation_date', 'numero_personas', 'comentarios']
+        widgets = {
+            'reservation_date': forms.widgets.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'comentarios': forms.Textarea(attrs={'placeholder': 'Comentarios (opcional)'}),
+        }
 
-    # Usando DateTimeInput para que el usuario pueda seleccionar tanto la fecha como la hora
-    reservation_date = forms.DateTimeField(
-        required=True,
-        widget=forms.widgets.DateTimeInput(attrs={'type': 'datetime-local'})
-    )
-
-    comentarios = forms.CharField(
-        required=False,
-        widget=forms.Textarea(attrs={'placeholder': 'Comentarios (opcional)'})
-    )
+    def clean_reservation_date(self):
+        reservation_date = self.cleaned_data.get('reservation_date')
+        if reservation_date < now():
+            raise ValidationError("No puedes realizar una reserva para una fecha pasada.")
+        return reservation_date
 
 #formulario para agregar camareros
 class AddWaiterForm(forms.ModelForm):

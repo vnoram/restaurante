@@ -11,26 +11,38 @@
     <table border="1">
       <thead>
         <tr>
-          <th>ID</th>
+          {% if is_waiter %}
+          <th>Cliente</th>
+          <th>ID Cliente</th>
+          {% endif %}
           <th>Fecha</th>
           <th>Número de Personas</th>
           <th>Comentarios</th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
         {% for reservation in reservations %}
         <tr>
-          <td>{{ reservation.id }}</td>
+          {% if is_waiter %}
+          <td>{{ reservation.cliente.username }}</td>
+          <td>{{ reservation.cliente.id }}</td>
+          {% endif %}
           <td>{{ reservation.reservation_date }}</td>
           <td>{{ reservation.numero_personas }}</td>
           <td>{{ reservation.comentarios }}</td>
+          <td>
+            <a href="{% url 'edit_reservation' reservation.id %}">Editar</a>
+            <a href="{% url 'delete_reservation' reservation.id %}">Eliminar</a>
+          </td>
         </tr>
         {% empty %}
         <tr>
-          <td colspan="4">No hay reservaciones.</td>
+          <td colspan="5">No hay reservaciones.</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
+    <a href="{% url 'home' %}">Volver al Inicio</a>
   </body>
 </html>

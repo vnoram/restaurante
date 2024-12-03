@@ -18,5 +18,7 @@ urlpatterns = [
     path('delete_user/<int:user_id>/', views.delete_user_view, name='delete_user'),
     path('add-user/', views.add_user_view, name='add_user'),
     path('add-waiter/', views.add_waiter_view, name='add_waiter'),
+    path("edit_reservation/<int:reservation_id>/", views.edit_reservation_view, name="edit_reservation"),
+    path("delete_reservation/<int:reservation_id>/", views.delete_reservation_view, name="delete_reservation"),
 
 ]

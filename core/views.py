@@ -63,29 +63,107 @@ def reservations_list(request):
 # Vista para reservar
 @login_required
 def reserve_view(request):
-    # Solo los clientes y meseros pueden hacer reservas
-    user_role = 'Usuario no asignado'
-    if request.user.groups.filter(name='cliente').exists():
-        user_role = 'Cliente'
-    elif request.user.groups.filter(name='waiter').exists():
-        user_role = 'Camarero'
+    user = request.user  # Usuario autenticado
 
-    # Si no es un cliente o mesero, redirigir a home
-    if user_role not in ['Cliente', 'Camarero']:
-        return redirect('home')
+    # Determina el rol del usuario
+    user_role = "Usuario no asignado"
+    if user.groups.filter(name="cliente").exists():
+        user_role = "Cliente"
+    elif user.groups.filter(name="waiter").exists():
+        user_role = "Camarero"
 
-    # Manejo del formulario
-    if request.method == 'POST':
+    # Redirige si no es cliente o camarero
+    if user_role not in ["Cliente", "Camarero"]:
+        return redirect("home")
+
+    if request.method == "POST":
         form = ReservaForm(request.POST)
         if form.is_valid():
-            form.save()  # Guarda la reserva
-            messages.success(request, 'Reserva realizada con éxito.')
-            return redirect('home')  # Redirige al home después de guardar
+            reserva = form.save(commit=False)  # No guarda aún en la base de datos
+            reserva.cliente = user  # Asocia la reserva al usuario autenticado
+            reserva.save()  # Guarda finalmente en la base de datos
+            messages.success(request, "Reserva realizada con éxito.")
+            return redirect("home")
     else:
-        form = ReservaForm()  # Si es GET, se crea un formulario vacío
+        form = ReservaForm()
 
-    # Renderiza el formulario con el rol del usuario
-    return render(request, 'core/reserve.html', {'form': form, 'user_role': user_role})
+    return render(request, "core/reserve.html", {"form": form, "user_role": user_role})
+
+#?------------------------------------------------------------------------------
+
+# Vista para ver las reservas del usuario
+@login_required
+def reservations_list(request):
+    user = request.user
+    reservations = []
+    is_waiter = False
+
+    if user.groups.filter(name="cliente").exists():
+        # Mostrar solo las reservas del cliente
+        reservations = Reserva.objects.filter(cliente=user)
+    elif user.groups.filter(name="waiter").exists():
+        # Mostrar todas las reservas si es camarero
+        reservations = Reserva.objects.all()
+        is_waiter = True
+    else:
+        # Si no es cliente ni camarero, redirigir a home
+        return redirect("home")
+
+    return render(
+        request, "core/reservations_list.html", {"reservations": reservations, "is_waiter": is_waiter}
+    )
+#?--------------------------------------------------------------------------------------------
+#editar la reserva
+@login_required
+def edit_reservation_view(request, reservation_id):
+    try:
+        reservation = Reserva.objects.get(id=reservation_id)
+
+        # Verifica que el usuario sea el cliente o camarero
+        if not (
+            request.user.groups.filter(name="cliente").exists() and reservation.cliente == request.user
+        ) and not request.user.groups.filter(name="waiter").exists():
+            return redirect("home")
+
+        if request.method == "POST":
+            form = ReservaForm(request.POST, instance=reservation)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Reserva actualizada correctamente.")
+                return redirect("reservations_list")
+        else:
+            form = ReservaForm(instance=reservation)
+    except Reserva.DoesNotExist:
+        messages.error(request, "La reserva no existe.")
+        return redirect("reservations_list")
+
+    return render(request, "core/edit_reservations.html", {"form": form, "reservations": reservation})
+
+#?----------------------------------------------------------------------------------------------------
+#eliminar reserva
+@login_required
+def delete_reservation_view(request, reservation_id):
+    try:
+        reservation = Reserva.objects.get(id=reservation_id)
+    except Reserva.DoesNotExist:
+        messages.error(request, "La reserva no existe.")
+        return redirect("reservations_list")
+
+    user = request.user
+    is_waiter = user.groups.filter(name="waiter").exists()
+
+    # Permitir eliminación solo si es cliente dueño de la reserva o un camarero
+    if reservation.cliente != user and not is_waiter:
+        messages.error(request, "No tienes permiso para eliminar esta reserva.")
+        return redirect("reservations_list")
+
+    if request.method == "POST":
+        reservation.delete()
+        messages.success(request, "Reserva eliminada con éxito.")
+        return redirect("reservations_list")
+
+    return render(request, "core/confirm_delete.html", {"reservation": reservation})
+
 #!--------------------------------------------------------
 # Vista para el dashboard del camarero
 @login_required
