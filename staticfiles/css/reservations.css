@@ -1,0 +1,13 @@
+.reservations-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.reservations-table th,
+.reservations-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+.reservations-table th {
+  background: #007bff;
+  color: white;
+}

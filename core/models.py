@@ -40,8 +40,9 @@ class Platillo(models.Model):
     imagen = models.ImageField(upload_to='platillos/', blank=True, null=True)
 
     def clean(self):
-        if self.precio < 0:
-            raise ValidationError({'precio': 'El precio no puede ser negativo.'})
+        if self.precio is None or self.precio <= 0:
+            raise ValidationError("El saldo debe ser mayor a 0.")
+        super(Platillo, self).clean()  # Llama al método clean de la clase padre para asegurar que otras validaciones también se ejecuten.
 
     def __str__(self):
         return self.nombre

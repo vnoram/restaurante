@@ -1,0 +1,81 @@
+/* login.css */
+
+/* Estilos generales del cuerpo */
+body {
+  background-color: #fdf2f8; /* Rosa pastel */
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+/* Contenedor del formulario */
+.login-container {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* Título */
+.login-container h1 {
+  font-size: 2rem;
+  color: #ff79c6; /* Rosa más vivo */
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+/* Entrada de texto y select */
+.login-container input,
+.login-container select {
+  width: 100%;
+  padding: 0.8rem;
+  margin: 0.5rem 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Botón de inicio de sesión */
+.login-container button {
+  background: linear-gradient(90deg, #ff79c6, #ff92d0);
+  border: none;
+  color: white;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.login-container button:hover {
+  background: linear-gradient(90deg, #ff92d0, #ff79c6);
+  box-shadow: 0 4px 8px rgba(255, 121, 198, 0.3);
+}
+
+/* Enlaces */
+.login-container a {
+  color: #ff79c6;
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  display: inline-block;
+  transition: color 0.3s ease;
+}
+
+.login-container a:hover {
+  color: #ff92d0;
+}
+
+/* Icono adicional */
+.icon {
+  font-size: 3rem;
+  color: #ff79c6;
+  margin-bottom: 1rem;
+}

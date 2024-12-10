@@ -1,9 +1,17 @@
-{% extends 'core/base.html' %} {% block content %}
+{% extends 'core/base.html' %} {% load static %} {% block content %}
 <h2>Agregar un nuevo platillo</h2>
+
+<!-- Bloque para mostrar mensajes -->
+{% if messages %}
+<ul>
+  {% for message in messages %}
+  <li class="{{ message.tags }}">{{ message }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
 
 <form method="POST" enctype="multipart/form-data">
   {% csrf_token %} {{ form.as_p }}
   <button type="submit">Guardar Platillo</button>
 </form>
-
 {% endblock %}

@@ -327,7 +327,9 @@ def add_platillo_view(request):
         form = PlatilloForm()
         messages.error(request, 'Corrige los errores del formulario.')
 
-    return render(request, 'core/menu.html', {'form': form})
+    #return render(request, 'core/menu.html', {'form': form})
+    return render(request, 'core/add_platillo.html', {'form': form})
+
 
 # Vista para eliminar un platillo
 @login_required
