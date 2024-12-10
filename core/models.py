@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 
 
 
+
 # Modelo para los ítems del menú
 class MenuItem(models.Model):
     """
@@ -34,17 +35,24 @@ class Waiter(models.Model):
 
 #modelos para los platillos
 class Platillo(models.Model):
-    nombre = models.CharField(max_length=100)
-    descripcion = models.TextField()
-    precio = models.DecimalField(max_digits=10, decimal_places=2)  # Asegúrate de valores positivos
-    imagen = models.ImageField(upload_to='platillos/', blank=True, null=True)
+    nombre = models.CharField(max_length=100)  # Campo para el nombre del platillo.
+    descripcion = models.TextField()  # Descripción del platillo.
+    precio = models.DecimalField(max_digits=10, decimal_places=2)  # Campo para el precio, con validación de valores positivos.
+    imagen = models.ImageField(upload_to='platillos/', blank=True, null=True)  # Campo opcional para subir una imagen.
+    disponible = models.BooleanField(default=True)  # Campo para disponibilidad
 
     def clean(self):
+        """
+        Valida que el precio sea mayor a 0 antes de guardar el modelo.
+        """
         if self.precio is None or self.precio <= 0:
-            raise ValidationError("El saldo debe ser mayor a 0.")
-        super(Platillo, self).clean()  # Llama al método clean de la clase padre para asegurar que otras validaciones también se ejecuten.
+            raise ValidationError("El precio debe ser mayor a 0.")
+        super().clean()  # Llama al método clean de la clase padre.
 
     def __str__(self):
+        """
+        Representación legible del modelo.
+        """
         return self.nombre
     
 
@@ -76,3 +84,18 @@ class Cliente(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.identificador_unico}"
+    
+#? modelos de compra cliente
+
+
+class Compra(models.Model):
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE)
+    fecha_compra = models.DateTimeField(auto_now_add=True)
+
+class Pedido(models.Model):
+    compra = models.ForeignKey(Compra, on_delete=models.CASCADE, related_name="pedidos")
+    platillo = models.ForeignKey(Platillo, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.cantidad} x {self.platillo.nombre} (Compra #{self.compra.id})"

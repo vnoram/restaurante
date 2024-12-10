@@ -20,5 +20,5 @@ urlpatterns = [
     path('add-waiter/', views.add_waiter_view, name='add_waiter'),
     path("edit_reservation/<int:reservation_id>/", views.edit_reservation_view, name="edit_reservation"),
     path("delete_reservation/<int:reservation_id>/", views.delete_reservation_view, name="delete_reservation"),
-
+    path('comprar/', views.comprar_view, name='comprar'),
 ]

@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.utils.timezone import now
 
 
+
 # Formulario personalizado para registrar usuarios
 class CustomUserCreationForm(UserCreationForm):
     """
@@ -85,3 +86,10 @@ class AddWaiterForm(forms.ModelForm):
             waiter_group = Group.objects.get(name='camarero')
             user.groups.add(waiter_group)
         return user
+
+#comprar
+
+class PlatilloForm(forms.ModelForm):
+    class Meta:
+        model = Platillo
+        fields = ['nombre', 'descripcion', 'precio', 'imagen']

@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 from .forms import PlatilloForm
-from .models import Platillo
+from .models import Platillo, Compra, Pedido
 from .forms import ReservaForm  # Importar el formulario
 from django.contrib import messages
 from core.forms import CustomUserCreationForm  # Usar el formulario personalizado
@@ -419,3 +419,32 @@ def add_waiter_view(request):
         form = AddWaiterForm()
     return render(request, 'core/add_waiter.html', {'form': form})
 
+#!----------------------------------------------------------------------------
+
+# compras para clientes
+
+@login_required
+def comprar_view(request):
+    if not request.user.groups.filter(name='Cliente').exists():
+        messages.error(request, "Solo los clientes pueden realizar compras.")
+        return redirect('menu')
+
+    if request.method == 'POST':
+        platillos_ids = request.POST.getlist('platillos')
+        if not platillos_ids:
+            messages.error(request, "No seleccionaste ningún platillo.")
+            return redirect('comprar_view')
+
+        # Crear la compra
+        compra = Compra.objects.create(cliente=request.user)
+
+        # Registrar los pedidos
+        for platillo_id in platillos_ids:
+            platillo = get_object_or_404(Platillo, id=platillo_id, disponible=True)
+            Pedido.objects.create(compra=compra, platillo=platillo)
+
+        messages.success(request, "¡Compra realizada con éxito!")
+        return redirect('menu')
+
+    platillos = Platillo.objects.filter(disponible=True)
+    return render(request, 'core/comprar.html', {'platillos': platillos})

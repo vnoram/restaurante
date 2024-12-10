@@ -1,0 +1,16 @@
+{% extends 'base.html' %} {% block content %}
+<h1>Comprar Platillos</h1>
+<form method="POST">
+  {% csrf_token %}
+  <ul>
+    {% for platillo in platillos %}
+    <li>
+      <input type="checkbox" name="platillos" value="{{ platillo.id }}" />
+      {{ platillo.nombre }} - ${{ platillo.precio }}
+    </li>
+    {% endfor %}
+  </ul>
+  <button type="submit">Comprar</button>
+</form>
+<a href="{% url 'menu' %}">Volver al Menú</a>
+{% endblock %}
