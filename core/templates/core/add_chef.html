@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Agregar Chef</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Agregar Chef</button>
+</form>
+<a href="{% url 'manage_user' %}">Volver a la gestión de usuarios</a>
+{% endblock %}

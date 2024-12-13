@@ -11,6 +11,8 @@ from django.contrib import messages
 from core.forms import CustomUserCreationForm  # Usar el formulario personalizado
 from .models import Reserva
 from .forms import AddWaiterForm
+from .forms import AddChefForm
+
 
 
 
@@ -463,3 +465,30 @@ def ver_compras_view(request):
         compra.total = sum(pedido.platillo.precio for pedido in compra.pedidos.all())
 
     return render(request, 'core/ver_compras.html', {'compras': compras})
+
+#?-------------------------------------------------------------------------
+# Agregar chefs
+@login_required
+@user_passes_test(is_admin)  # Solo admins pueden acceder
+def add_chef_view(request):
+    if request.method == 'POST':
+        form = AddChefForm(request.POST)  # Usa el formulario para añadir chefs
+        if form.is_valid():
+            chef = form.save(commit=False)
+
+            chef.set_password(form.cleaned_data['password'])  # Asegúrate de hashear el password
+            chef.save()
+            
+            # Asignar al grupo 'chef'
+            chef_group, created = Group.objects.get_or_create(name='chef')
+            chef.groups.add(chef_group)
+            
+            messages.success(request, 'Chef agregado exitosamente.')
+            form = AddChefForm()
+            return redirect('manage_user')  # Redirige a la gestión de usuarios
+        else:
+            messages.error(request, 'Corrige los errores del formulario.')
+    else:
+        # Inicializa un formulario vacío para solicitudes GET
+        form = AddChefForm()
+    return render(request, 'core/add_chef.html', {'form': form})

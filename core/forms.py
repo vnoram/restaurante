@@ -93,3 +93,27 @@ class PlatilloForm(forms.ModelForm):
     class Meta:
         model = Platillo
         fields = ['nombre', 'descripcion', 'precio', 'imagen']
+
+#creacion de chef
+# Formulario para agregar chefs
+class AddChefForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput, required=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+
+    def __init__(self, *args, **kwargs):
+        super(AddChefForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.initial = None  # Esto asegura que no haya datos iniciales en el formulario
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data['password'])  # Asegura que la contraseña esté hasheada
+        if commit:
+            user.save()
+            # Asignar al grupo "Chef"
+            chef_group, _ = Group.objects.get_or_create(name='chef')
+            user.groups.add(chef_group)
+        return user
