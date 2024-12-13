@@ -93,7 +93,7 @@ class Compra(models.Model):
     fecha_compra = models.DateTimeField(auto_now_add=True)
 
 class Pedido(models.Model):
-    compra = models.ForeignKey(Compra, on_delete=models.CASCADE, related_name="pedidos")
+    compra = models.ForeignKey(Compra, related_name="pedidos", on_delete=models.CASCADE)
     platillo = models.ForeignKey(Platillo, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1)
 

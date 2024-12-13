@@ -448,3 +448,18 @@ def comprar_view(request):
 
     platillos = Platillo.objects.filter(disponible=True)
     return render(request, 'core/comprar.html', {'platillos': platillos})
+#? ver compras
+@login_required
+def ver_compras_view(request):
+    # Verificar que el usuario pertenece al grupo "Cliente"
+    if not request.user.groups.filter(name='Cliente').exists():
+        return redirect('menu')  # Redirigir al menú si no es cliente
+
+    # Obtener todas las compras del cliente autenticado
+    compras = Compra.objects.filter(cliente=request.user).prefetch_related('pedidos__platillo')
+
+    # Contexto para enviar a la plantilla
+    context = {
+        'compras': compras
+    }
+    return render(request, 'core/ver_compras.html', context)

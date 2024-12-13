@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Mis Compras</h2>
+{% if compras %}
+    <ul>
+        {% for compra in compras %}
+            <li>
+                <strong>Fecha de Compra:</strong> {{ compra.fecha_compra }}<br>
+                <strong>Platillos:</strong>
+                <ul>
+                  {% for pedido in compra.pedidos.all %}
+                  <li>{{ pedido.platillo.nombre }} - ${{ pedido.platillo.precio }}</li>
+                  {% endfor %}
+              
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No has realizado ninguna compra.</p>
+{% endif %}
+<a href="{% url 'menu' %}">Volver al Menú</a>
+{% endblock %}
