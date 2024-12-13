@@ -448,18 +448,18 @@ def comprar_view(request):
 
     platillos = Platillo.objects.filter(disponible=True)
     return render(request, 'core/comprar.html', {'platillos': platillos})
-#? ver compras
+#? ver compras y calcular el total de 
 @login_required
 def ver_compras_view(request):
-    # Verificar que el usuario pertenece al grupo "Cliente"
+    """Muestra al cliente las compras realizadas por él, incluyendo el total."""
     if not request.user.groups.filter(name='Cliente').exists():
-        return redirect('menu')  # Redirigir al menú si no es cliente
+        return redirect('menu')
 
-    # Obtener todas las compras del cliente autenticado
+    # Obtener todas las compras del cliente
     compras = Compra.objects.filter(cliente=request.user).prefetch_related('pedidos__platillo')
 
-    # Contexto para enviar a la plantilla
-    context = {
-        'compras': compras
-    }
-    return render(request, 'core/ver_compras.html', context)
+    # Agregar el total de cada compra al contexto
+    for compra in compras:
+        compra.total = sum(pedido.platillo.precio for pedido in compra.pedidos.all())
+
+    return render(request, 'core/ver_compras.html', {'compras': compras})
