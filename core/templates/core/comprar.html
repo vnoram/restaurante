@@ -1,16 +1,55 @@
-{% extends 'base.html' %} {% block content %}
-<h1>Comprar Platillos</h1>
-<form method="POST">
-  {% csrf_token %}
-  <ul>
-    {% for platillo in platillos %}
-    <li>
-      <input type="checkbox" name="platillos" value="{{ platillo.id }}" />
-      {{ platillo.nombre }} - ${{ platillo.precio }}
-    </li>
-    {% endfor %}
-  </ul>
-  <button type="submit">Comprar</button>
-</form>
-<a href="{% url 'menu' %}">Volver al Menú</a>
+{% extends 'base.html' %} 
+{% block content %}
+<div class="container mt-5">
+  <!-- Título -->
+  <h1 class="text-center text-primary mb-4">Comprar Platillos</h1>
+
+  <!-- Tabla de Platillos -->
+  <form method="POST" class="text-center">
+    {% csrf_token %}
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead class="table-success">
+          <tr>
+            <th scope="col">Seleccionar</th>
+            <th scope="col">Nombre del Platillo</th>
+            <th scope="col">Precio</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for platillo in platillos %}
+          <tr>
+            <td>
+              <input 
+                type="checkbox" 
+                name="platillos" 
+                value="{{ platillo.id }}" 
+                class="form-check-input"
+              />
+            </td>
+            <td>{{ platillo.nombre }}</td>
+            <td>${{ platillo.precio|floatformat:2 }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="3" class="text-center text-danger">
+              No hay platillos disponibles.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Botón Comprar -->
+    <div class="mt-4">
+      <button type="submit" class="btn btn-success btn-lg">Comprar</button>
+    </div>
+  </form>
+
+  <!-- Enlace Volver al Menú -->
+  <div class="mt-4 text-center">
+    <a href="{% url 'menu' %}" class="btn btn-outline-secondary btn-lg">Volver al Menú</a>
+  </div>
+</div>
 {% endblock %}

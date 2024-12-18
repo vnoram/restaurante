@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if is_chef %}
+  <h2>Compras realizadas</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID Compra</th>
+        <th>Cliente</th>
+        <th>Fecha</th>
+        <th>Detalle</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for compra in compras %}
+      <tr>
+        <td>{{ compra.id }}</td>
+        <td>{{ compra.cliente.username }}</td>
+        <td>{{ compra.fecha }}</td>
+        <td>
+          <ul>
+            {% for pedido in compra.pedidos.all %}
+            <li>{{ pedido.cantidad }} x {{ pedido.platillo.nombre }} - ${{ pedido.platillo.precio }}</li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4">No hay compras registradas.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>No tienes permiso para ver esta página.</p>
+{% endif %}
+
+{% endblock %}

@@ -2,20 +2,52 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reservar</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
   </head>
   <body>
-    <h1>Hacer una Reserva</h1>
+    <!-- Contenedor Principal -->
+    <div class="container mt-5">
+      <!-- Encabezado -->
+      <div class="text-center mb-4">
+        <h1 class="text-primary fw-bold">Hacer una Reserva</h1>
+      </div>
 
-    <!-- Formulario de reserva -->
-    <form method="POST">
-      {% csrf_token %} {{ form.as_p }}
-      <!-- Esto renderiza todos los campos del formulario -->
+      <!-- Formulario de Reserva -->
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="card shadow">
+            <div class="card-body">
+              <form method="POST" class="needs-validation" novalidate>
+                {% csrf_token %}
+                {{ form.as_p }}
 
-      <button type="submit">Realizar Reserva</button>
-    </form>
+                <!-- Botón de Envío -->
+                <div class="text-center mt-3">
+                  <button type="submit" class="btn btn-success">
+                    Realizar Reserva
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <!-- Enlace para volver al home -->
-    <a href="{% url 'home' %}">Volver</a>
+      <!-- Enlace para volver al Home -->
+      <div class="text-center mt-4">
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary"
+          >Volver al Inicio</a
+        >
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
