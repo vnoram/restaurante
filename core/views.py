@@ -508,9 +508,32 @@ def home_view(request):
 @login_required
 def ver_compras_chef(request):
     if not request.user.groups.filter(name='Chef').exists():
-        messages.error(request, "No tienes permisos para acceder a esta página.")
+        messages.error(request, "No tienes permiso para acceder a esta página.")
         return redirect('home')
 
-    compras = Compra.objects.all().order_by('-fecha_compra')  # Ordena por fecha descendente
+    compras = Compra.objects.all()
     return render(request, 'core/ver_compras_chef.html', {'compras': compras})
+
+
+#?--------------------------------------------
+#funcion para que los chefs cambien el estado de las compras
+@login_required
+def actualizar_estado_compra(request, compra_id):
+    if not request.user.groups.filter(name='Chef').exists():
+        messages.error(request, "No tienes permiso para acceder a esta página.")
+        return redirect('home')
+
+    compra = get_object_or_404(Compra, id=compra_id)
+
+    if request.method == 'POST':
+        nuevo_estado = request.POST.get('estado')
+        if nuevo_estado in ['en_preparacion', 'terminado', 'compra_cancelada']:
+            compra.estado = nuevo_estado
+            compra.save()
+            messages.success(request, "Estado de la compra actualizado con éxito.")
+        else:
+            messages.error(request, "Estado inválido.")
+
+    return redirect('ver_compras_chef')
+
 

@@ -28,6 +28,7 @@ urlpatterns = [
     path('ver_compras/', views.ver_compras_view, name='ver_compras'),
     path('add_chef/', views.add_chef_view, name='add_chef'),
     path('compras-chef/', ver_compras_chef, name='ver_compras_chef'),
+    path('actualizar-estado-compra/<int:compra_id>/', views.actualizar_estado_compra, name='actualizar_estado_compra'),
 
 ]
 

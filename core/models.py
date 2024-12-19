@@ -89,8 +89,20 @@ class Cliente(models.Model):
 
 
 class Compra(models.Model):
+    ESTADOS_COMPRA = [
+        ('en_preparacion', 'En Preparación'),
+        ('terminado', 'Terminado'),
+        ('compra_cancelada', 'Compra Cancelada'),
+    ]
     cliente = models.ForeignKey(User, on_delete=models.CASCADE)
     fecha_compra = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADOS_COMPRA,
+        default='en_preparacion'
+    )
+    def __str__(self):
+        return f"Compra {self.id} - {self.get_estado_display()}"
 
 class Pedido(models.Model):
     compra = models.ForeignKey(Compra, related_name="pedidos", on_delete=models.CASCADE)

@@ -1,44 +1,52 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container mt-5">
-    <h1 class="text-center text-primary mb-4">Compras Realizadas</h1>
-
-    {% if compras %}
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped">
-            <thead class="table-success">
-                <tr>
-                    <th>ID Compra</th>
-                    <th>Cliente</th>
-                    <th>Fecha de Compra</th>
-                    <th>Detalles</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for compra in compras %}
-                <tr>
-                    <td>{{ compra.id }}</td>
-                    <td>{{ compra.cliente.username }}</td>
-                    <td>{{ compra.fecha_compra|date:"d M Y, H:i" }}</td>
-                    <td>
-                        <button class="btn btn-info btn-sm" data-bs-toggle="collapse" data-bs-target="#detalle{{ compra.id }}">
-                            Ver Detalles
-                        </button>
-                        <div id="detalle{{ compra.id }}" class="collapse mt-2">
-                            <ul>
-                                {% for pedido in compra.pedidos.all %}
-                                <li>{{ pedido.platillo.nombre }} - ${{ pedido.platillo.precio|floatformat:2 }}</li>
-                                {% endfor %}
-                            </ul>
+<div class="container mt-5 bg-light p-4 rounded shadow">
+    <h1 class="text-center text-primary mb-4">Gestión de Compras</h1>
+    <table class="table table-hover table-bordered">
+        <thead class="table-success text-center">
+            <tr>
+                <th>ID de Compra</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for compra in compras %}
+            <tr>
+                <td class="text-center">{{ compra.id }}</td>
+                <td class="text-center">{{ compra.cliente.username }}</td>
+                <td class="text-center">{{ compra.fecha }}</td>
+                <td class="text-center {% if compra.estado == 'compra_cancelada' %}text-danger fw-bold{% elif compra.estado == 'terminado' %}text-success fw-bold{% else %}text-warning fw-bold{% endif %}">
+                    {{ compra.get_estado_display }}
+                </td>
+                <td>
+                    <form method="POST" action="{% url 'actualizar_estado_compra' compra.id %}">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-center align-items-center">
+                            <select name="estado" class="form-select form-select-sm w-auto me-2">
+                                <option value="en_preparacion" {% if compra.estado == 'en_preparacion' %}selected{% endif %}>
+                                    En Preparación
+                                </option>
+                                <option value="terminado" {% if compra.estado == 'terminado' %}selected{% endif %}>
+                                    Terminado
+                                </option>
+                                <option value="compra_cancelada" {% if compra.estado == 'compra_cancelada' %}selected{% endif %}>
+                                    Compra Cancelada
+                                </option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-primary">Actualizar</button>
                         </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% else %}
-    <p class="text-center text-muted">No se han realizado compras aún.</p>
-    {% endif %}
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-danger">No hay compras registradas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

@@ -1,35 +1,63 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-  <h2 class="text-center mb-4">Mis Compras</h2>
-  
-  {% if compras %}
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        {% for compra in compras %}
-        <div class="card mb-3 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title fw-bold">
-              Fecha de Compra: {{ compra.fecha_compra }}
-            </h5>
-            <ul class="list-group list-group-flush">
-              {% for pedido in compra.pedidos.all %}
-              <li class="list-group-item">
-                {{ pedido.platillo.nombre }} - ${{ pedido.platillo.precio|floatformat:0 }}
-              </li>
-              {% endfor %}
-            </ul>
-            <p class="mt-2 fw-bold">Total: ${{ compra.total }}</p>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-  {% else %}
-    <p class="text-center">No has realizado ninguna compra.</p>
-  {% endif %}
-
-  <!-- Botones -->
+<div class="container mt-5 bg-light p-4 rounded shadow">
+  <h1 class="text-center text-primary mb-4">Mis Compras</h1>
+  <table class="table table-hover table-bordered">
+      <thead class="table-success text-center">
+          <tr>
+              <th>ID de Compra</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+              <th>Total</th>
+              <th>Detalle</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for compra in compras %}
+          <tr>
+              <td class="text-center">{{ compra.id }}</td>
+              <td class="text-center">{{ compra.fecha }}</td>
+              <td class="text-center {% if compra.estado == 'compra_cancelada' %}text-danger fw-bold{% elif compra.estado == 'terminado' %}text-success fw-bold{% else %}text-warning fw-bold{% endif %}">
+                  {{ compra.get_estado_display }}
+              </td>
+              <td class="text-center fw-bold">${{ compra.total }}</td>
+              <td>
+                  <!-- Botón para ver detalles -->
+                  <button class="btn btn-sm btn-info" type="button" data-bs-toggle="collapse" data-bs-target="#detalle-{{ compra.id }}" aria-expanded="false">
+                      Ver Detalle
+                  </button>
+              </td>
+          </tr>
+          <tr>
+              <td colspan="5" class="p-0">
+                  <div class="collapse" id="detalle-{{ compra.id }}">
+                      <table class="table table-sm table-striped m-0">
+                          <thead class="table-secondary">
+                              <tr>
+                                  <th>Platillo</th>
+                                  <th>Precio</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              {% for pedido in compra.pedidos.all %}
+                              <tr>
+                                  <td>{{ pedido.platillo.nombre }}</td>
+                                  <td>${{ pedido.platillo.precio }}</td>
+                              </tr>
+                              {% endfor %}
+                          </tbody>
+                      </table>
+                  </div>
+              </td>
+          </tr>
+          {% empty %}
+          <tr>
+              <td colspan="5" class="text-center text-danger">No tienes compras registradas.</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
 </div>
+
 {% endblock %}
