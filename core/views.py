@@ -431,25 +431,30 @@ def comprar_view(request):
         messages.error(request, "Solo los clientes pueden realizar compras.")
         return redirect('menu')
 
+    # Obtener los platillos disponibles
+    platillos = Platillo.objects.filter(disponible=True)
+
     if request.method == 'POST':
         platillos_ids = request.POST.getlist('platillos')
         if not platillos_ids:
             messages.error(request, "No seleccionaste ningún platillo.")
-            return redirect('comprar_view')
+        else:
+            # Crear la compra
+            compra = Compra.objects.create(cliente=request.user)
 
-        # Crear la compra
-        compra = Compra.objects.create(cliente=request.user)
+            # Registrar los pedidos
+            for platillo_id in platillos_ids:
+                platillo = get_object_or_404(Platillo, id=platillo_id, disponible=True)
+                Pedido.objects.create(compra=compra, platillo=platillo)
 
-        # Registrar los pedidos
-        for platillo_id in platillos_ids:
-            platillo = get_object_or_404(Platillo, id=platillo_id, disponible=True)
-            Pedido.objects.create(compra=compra, platillo=platillo)
+            # Agregar mensaje de éxito
+            messages.success(request, "¡Compra realizada con éxito!")
+        
+        # Renderizar la página nuevamente sin redirigir
+        return render(request, 'core/comprar.html', {'platillos': platillos})
 
-        messages.success(request, "¡Compra realizada con éxito!")
-        return redirect('menu')
-
-    platillos = Platillo.objects.filter(disponible=True)
     return render(request, 'core/comprar.html', {'platillos': platillos})
+
 #? ver compras y calcular el total de 
 @login_required
 def ver_compras_view(request):

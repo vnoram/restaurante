@@ -1,10 +1,23 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 {% block content %}
 <div class="container mt-5">
+  <!-- Mostrar Mensajes -->
+  {% if messages %}
+  <div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  
+    {% endfor %}
+  </div>
+  {% endif %}
+
   <!-- Título -->
   <h1 class="text-center text-primary mb-4">Comprar Platillos</h1>
 
-  <!-- Tabla de Platillos -->
+  <!-- Formulario para Comprar -->
   <form method="POST" class="text-center">
     {% csrf_token %}
     <div class="table-responsive">
@@ -20,10 +33,10 @@
           {% for platillo in platillos %}
           <tr>
             <td>
-              <input 
-                type="checkbox" 
-                name="platillos" 
-                value="{{ platillo.id }}" 
+              <input
+                type="checkbox"
+                name="platillos"
+                value="{{ platillo.id }}"
                 class="form-check-input"
               />
             </td>
@@ -41,13 +54,13 @@
       </table>
     </div>
 
-    <!-- Botón Comprar -->
+    <!-- Botón para Comprar -->
     <div class="mt-4">
       <button type="submit" class="btn btn-success btn-lg">Comprar</button>
     </div>
   </form>
 
-  <!-- Enlace Volver al Menú -->
+  <!-- Enlace para Volver -->
   <div class="mt-4 text-center">
     <a href="{% url 'menu' %}" class="btn btn-outline-secondary btn-lg">Volver al Menú</a>
   </div>
