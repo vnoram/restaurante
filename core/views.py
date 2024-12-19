@@ -497,3 +497,20 @@ def add_chef_view(request):
         # Inicializa un formulario vacío para solicitudes GET
         form = AddChefForm()
     return render(request, 'core/add_chef.html', {'form': form})
+
+#?-------------------------------------------------------------------------
+#funcion para que los chefs visualicen las compras echas por los clientes
+@login_required
+def home_view(request):
+    is_chef = request.user.groups.filter(name="Chef").exists()
+    return render(request, 'core/home.html', {'is_chef': is_chef})
+
+@login_required
+def ver_compras_chef(request):
+    if not request.user.groups.filter(name='Chef').exists():
+        messages.error(request, "No tienes permisos para acceder a esta página.")
+        return redirect('home')
+
+    compras = Compra.objects.all().order_by('-fecha_compra')  # Ordena por fecha descendente
+    return render(request, 'core/ver_compras_chef.html', {'compras': compras})
+

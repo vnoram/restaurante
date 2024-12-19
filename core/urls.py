@@ -2,6 +2,8 @@ from django.urls import path
 from . import views  # Importamos las vistas desde el archivo views.py de la app `core`
 from django.conf import settings
 from django.conf.urls.static import static
+from core.views import ver_compras_chef
+
 
 urlpatterns = [
     path('', views.home_view, name='home'),  # Página de inicio
@@ -25,6 +27,8 @@ urlpatterns = [
     path('comprar/', views.comprar_view, name='comprar'),
     path('ver_compras/', views.ver_compras_view, name='ver_compras'),
     path('add_chef/', views.add_chef_view, name='add_chef'),
+    path('compras-chef/', ver_compras_chef, name='ver_compras_chef'),
+
 ]
 
 if settings.DEBUG:

@@ -43,9 +43,15 @@
             <a
               href="{% url 'reservations_list' %}"
               class="btn btn-outline-primary"
-              >Ver Reservaciones</a
-            >
-
+              >Ver Reservaciones</a>
+              
+              {% if is_chef %}
+              <div class="mt-3">
+                  <a href="{% url 'ver_compras_chef' %}" class="btn btn-primary btn-block">Ver Compras Realizadas</a>
+              </div>
+              {% endif %}
+              
+              
             <!-- Opciones solo para administradores -->
             {% if is_admin %}
             <a
