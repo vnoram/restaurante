@@ -32,39 +32,35 @@
         <div class="card-body text-center">
           <p class="h5 mb-4">Hola, <strong>{{ user.username }}</strong>. Elige una opción:</p>
           <div class="d-grid gap-3">
+            <!-- Opciones para chefs -->
+            {% if is_chef %}
+            <a href="{% url 'ver_compras_chef' %}" class="btn btn-primary btn-block">Ver Compras Realizadas</a>
+            {% endif %}
+
             <!-- Opciones para meseros -->
             {% if is_waiter %}
-            <a href="{% url 'waiter_dashboard' %}" class="btn btn-info"
-              >Ir al Panel de Mesero</a
-            >
-            {% else %}
-            <!-- Opciones para usuarios generales -->
-            <a href="{% url 'menu' %}" class="btn btn-success">Ver el Menú</a>
+            <a href="{% url 'waiter_dashboard' %}" class="btn btn-info btn-block">Ir al Panel de Mesero</a>
+            {% endif %}
+
+            <!-- Opciones para clientes -->
+            {% if not is_chef and not is_waiter %}
+            <a href="{% url 'menu' %}" class="btn btn-success btn-block">Ver el Menú</a>
             <a
               href="{% url 'reservations_list' %}"
-              class="btn btn-outline-primary"
+              class="btn btn-outline-primary btn-block"
               >Ver Reservaciones</a>
-              
-              {% if is_chef %}
-              <div class="mt-3">
-                  <a href="{% url 'ver_compras_chef' %}" class="btn btn-primary btn-block">Ver Compras Realizadas</a>
-              </div>
-              {% endif %}
-              
-              
+            {% endif %}
+
             <!-- Opciones solo para administradores -->
             {% if is_admin %}
             <a
               href="{% url 'manage_user' %}"
-              class="btn btn-outline-danger"
-              >Gestión de Usuarios</a
-            >
+              class="btn btn-outline-danger btn-block"
+              >Gestión de Usuarios</a>
             {% endif %}
-            {% endif %}
+
             <!-- Cerrar sesión -->
-            <a href="{% url 'logout' %}" class="btn btn-secondary"
-              >Cerrar Sesión</a
-            >
+            <a href="{% url 'logout' %}" class="btn btn-secondary btn-block">Cerrar Sesión</a>
           </div>
         </div>
       </div>
