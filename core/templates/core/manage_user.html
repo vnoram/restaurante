@@ -1,12 +1,15 @@
 {% extends 'base.html' %} {% block content %}
 <h1>Gestión de Usuarios</h1>
 
-<a href="{% url 'add_waiter' %}">Agregar Camarero</a>
-<a href="{% url 'add_chef' %}">Agregar Chef</a> <!-- Enlace para agregar chefs -->
+<a href="{% url 'add_waiter' %}" class="btn btn-primary btn-sm">Agregar Camarero</a>
+<br>
+<a href="{% url 'add_chef' %}" class="btn btn-success btn-sm">Agregar Chef</a>
+<br>
+<br>
 
 
-<table>
-  <thead>
+<table class="table table-bordered table-striped table-hover">
+  <thead class="table-dark">
     <tr>
       <th>ID</th>
       <th>Nombre de Usuario</th>

@@ -23,6 +23,15 @@
         {% for platillo in platillos %}
         <div class="col-md-6 mb-4">
           <div class="card shadow">
+            <!-- Mostrar la imagen del platillo -->
+            {% if platillo.imagen %}
+            <img
+              src="{{ platillo.imagen.url }}"
+              alt="{{ platillo.nombre }}"
+              class="card-img-top"
+              style="height: 200px; object-fit: cover"
+            />
+            {% endif %}
             <div class="card-body">
               <h5 class="card-title text-success">{{ platillo.nombre }}</h5>
               <p class="card-text">{{ platillo.descripcion }}</p>
@@ -36,9 +45,7 @@
                 class="d-inline"
               >
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger btn-sm">
-                  Eliminar
-                </button>
+                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
               </form>
               {% endif %}
             </div>
@@ -55,12 +62,8 @@
       <!-- Opciones para Clientes o Meseros -->
       {% if user_role == 'Cliente' or user_role == 'Camarero' %}
       <div class="text-center mt-4">
-        <a href="{% url 'reserve' %}" class="btn btn-primary me-2"
-          >Hacer una Reserva</a
-        >
-        <a href="{% url 'comprar' %}" class="btn btn-success me-2"
-          >Comprar Platillos</a
-        >
+        <a href="{% url 'reserve' %}" class="btn btn-primary me-2">Hacer una Reserva</a>
+        <a href="{% url 'comprar' %}" class="btn btn-success me-2">Comprar Platillos</a>
         <a href="{% url 'ver_compras' %}" class="btn btn-info">Mis Compras</a>
       </div>
       {% endif %}
