@@ -14,16 +14,29 @@ from .forms import AddWaiterForm
 from .forms import AddChefForm
 
 
+from django.contrib.auth.decorators import login_required
 
-
-# Vista para la página de inicio
+@login_required
 def home_view(request):
     user = request.user
-    is_admin = False
-    if user.is_authenticated:
-        # Verifica si el usuario es administrador
-        is_admin = user.groups.filter(name='admin').exists()
-    return render(request, 'core/home.html', {'is_admin': is_admin})
+
+    # Identificar roles del usuario
+    is_admin = user.is_authenticated and user.is_superuser
+    is_chef = user.groups.filter(name='Chef').exists()
+    is_waiter = user.groups.filter(name='Waiter').exists()
+    is_client = user.groups.filter(name='cliente').exists()
+
+    # Contexto para pasar a la plantilla
+    context = {
+        'is_admin': is_admin,
+        'is_chef': is_chef,
+        'is_waiter': is_waiter,
+        'is_client': is_client,
+    }
+
+    return render(request, 'core/home.html', context)
+
+
 
 
 # Vista del menú
@@ -267,18 +280,6 @@ def admin_dashboard(request):
 
 # Vista para login, si no está logueado redirige
 
-@login_required
-def home_view(request):
-    user = request.user
-    is_admin = False
-    
-    # Verifica si el usuario es parte del grupo admin
-    if user.is_authenticated:
-        is_admin = user.groups.filter(name='admin').exists()
-
-    # Pasa la variable is_admin a la plantilla
-    return render(request, 'core/home.html', {'is_admin': is_admin})
-# Página predeterminada si no pertenece a ningún grupo
 
 
 
@@ -500,10 +501,7 @@ def add_chef_view(request):
 
 #?-------------------------------------------------------------------------
 #funcion para que los chefs visualicen las compras echas por los clientes
-@login_required
-def home_view(request):
-    is_chef = request.user.groups.filter(name="Chef").exists()
-    return render(request, 'core/home.html', {'is_chef': is_chef})
+
 
 @login_required
 def ver_compras_chef(request):
